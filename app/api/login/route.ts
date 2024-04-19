@@ -7,6 +7,10 @@ export async function POST(req: NextRequest) {
 
     const body= await req.json();
     const { email, password } = body;
+    
+    console.log("email: "+email)
+
+    console.log("password"+password)
 
      const respone = await fetch(
       `${process.env.DJANGO_API_URL}/api/user/login/`,{
@@ -14,7 +18,7 @@ export async function POST(req: NextRequest) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email:"lyhou282@gmail.com", password:"PhivLyhou" })
+        body: JSON.stringify({ email, password})
       }
      );
      if(!respone.ok){

@@ -1,33 +1,37 @@
 import { serialize } from "cookie";
-import { BaseNextResponse } from "next/dist/server/base-http";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET()
+export async function POST()
 {
 
     const cookieStore=cookies();
-    const cookieName=process.env.NEXT_PUBLIC_COOKIE_NAME||"refresh";
+    const cookieName=process.env?.COOKIE_REFRESH_TOKEN_NAME||"refresh";
     const credentials=cookieStore.get(cookieName);
+
+    console.log("credentials=",credentials)
+
     if(!credentials){
         return NextResponse.json(
             {
                 message:"Token not found"
             },
             {
-                status:404,
+                status:404
             }
         )
     }
     
     const refreshToken=credentials.value;
+    console.log("refresh token=",refreshToken)
 
     const respone=await fetch
     (
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,{
+        `${process.env.NEXT_PUBLIC_DJANGO_API_URL}/api/token/refresh/`,{
         method:"POST",
         headers:{
-            'Content-Type':'application/json'
+            'Content-Type':'application/json',
+             
         },
         body:JSON.stringify({refresh:refreshToken})
     });
@@ -45,9 +49,10 @@ export async function GET()
         }
 
      const data= await respone.json();
-        const user= data.user|| null;
-        const accessToken= data.token || null;
-        const newRefreshToken= data.refreshToken || null;
+     console.log("data=",data)
+        const user= data?.user|| null;
+        const accessToken= data?.access || null;
+        const newRefreshToken= data?.refresh || null;
         
        const serialized=serialize(cookieName,refreshToken,{
               httpOnly:true,

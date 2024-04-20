@@ -7,6 +7,7 @@ export async function POST()
 
     const cookieStore=cookies();
     const cookieName=process.env?.COOKIE_REFRESH_TOKEN_NAME||"refresh";
+    console.log("cookieName=",cookieName)
     const credentials=cookieStore.get(cookieName);
 
     console.log("credentials=",credentials)
@@ -31,6 +32,7 @@ export async function POST()
         method:"POST",
         headers:{
             'Content-Type':'application/json',
+            'Authorization':`Bearer ${refreshToken}`
              
         },
         body:JSON.stringify({refresh:refreshToken})

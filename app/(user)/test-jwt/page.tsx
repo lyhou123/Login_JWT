@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export default function page() {
   const[user,setUser]=useState(null)
   const[accessToken,setAccessToken]=useState("")
-  const[Authority,setAuthority]=useState(false)
+  const[Authorized,setAuthorized]=useState(false)
   const[refreshToken,setRefreshToken]=useState("") 
   const handleLogin = async()=>{
        const email = "lyhou282@gmail.com";
@@ -30,6 +30,10 @@ export default function page() {
   const handleRefreshToken = async()=>{
     fetch('http://localhost:3000/api/refresh',{
          method: 'POST',
+         headers:{
+          'Content-Type': 'application/json',
+          'Aurthorization': `Bearer ${refreshToken}`
+         },
          credentials: 'include',
          body: JSON.stringify({})
     })
@@ -54,7 +58,7 @@ export default function page() {
         body: JSON.stringify(body)
     })
     if(response.status===401){
-      setAuthority(true)
+      setAuthorized(true)
     }
     const data = await response.json()
     console.log("data from update:",data)
@@ -65,7 +69,9 @@ export default function page() {
         <p className='text-3xl'>Test JWT</p>
         <button className='bg-blue-700 text-xl text-gray-100 rounded-lg p-4 my-2' onClick={handleLogin}>Login</button>
         <button className='bg-blue-700 text-xl text-gray-100 rounded-lg p-4 my-2' onClick={handleUpdate}>Update</button>
+        {Authorized && 
         <button className='bg-blue-700 text-xl text-gray-100 rounded-lg p-4 my-2' onClick={handleRefreshToken}>Refresh</button>
+        }
     </main>
   )
 }
